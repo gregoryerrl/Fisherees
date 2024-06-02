@@ -1,7 +1,7 @@
 // src/FishSelectionPage.js
-import React, { useState } from "react";
-import { ref, set } from "firebase/database";
-import { db } from "./firebase/firebaseConfig";
+import React, {useState} from "react";
+import {ref, set} from "firebase/database";
+import {db} from "./firebase/firebaseConfig";
 
 const FishSelectionPage = () => {
   const [selectedFish, setSelectedFish] = useState("");
@@ -41,9 +41,8 @@ const FishSelectionPage = () => {
         BW = 0;
     }
     const rawClickValue =
-      (parseFloat(weight) * parseFloat(numberOfFishes) * BW) / 3;
-    const roundedClickValue =
-      rawClickValue > 25 ? Math.ceil(rawClickValue / 25) * 25 : 25;
+      ((parseFloat(weight) * parseFloat(numberOfFishes) * BW) / 3) * 25;
+    const roundedClickValue = Math.ceil(rawClickValue / 25) * 25;
     const displayFeed = roundedClickValue / 25;
 
     console.log(roundedClickValue);

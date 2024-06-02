@@ -1,48 +1,29 @@
 // src/HomePage.js
-import React, {useState, useEffect} from "react";
-import {ref as databaseRef, onValue} from "firebase/database";
-import {ref as storageRef, getDownloadURL} from "firebase/storage";
-import {db, storage} from "./firebase/firebaseConfig";
+import React, { useState, useEffect } from "react";
+import { ref as databaseRef, onValue } from "firebase/database";
+import { ref as storageRef, getDownloadURL } from "firebase/storage";
+import { db, storage } from "./firebase/firebaseConfig";
+import logo from "./images/image 4.png";
 
 const HomePage = () => {
-  const [sensorData, setSensorData] = useState({});
-  const [imageUrl, setImageUrl] = useState("");
-
-  useEffect(() => {
-    const fetchImage = async () => {
-      try {
-        const imageRef = storageRef(storage, "data/photo.jpg");
-        const url = await getDownloadURL(imageRef);
-        setImageUrl(url);
-      } catch (error) {
-        console.error("Error fetching image URL:", error);
-      }
-    };
-
-    fetchImage();
-  }, []);
-
-  useEffect(() => {
-    const sensorRef = databaseRef(db, "sensors/");
-    onValue(sensorRef, (snapshot) => {
-      const data = snapshot.val();
-      setSensorData(data);
-    });
-  }, []);
-
   return (
-    <div className="p-20 w-full">
-      <div className="w-1/3">
-        <h1 className="text-4xl font-light mb-4">Sensor Data</h1>
-        <p className="p-2 border">pH: {sensorData.ph}</p>
-        <p className="p-2 border">Turbidity: {sensorData.turbidity}</p>
-        <p className="p-2 border">Temperature: {sensorData.temperature}</p>
+    <div className="w-full h-[100vh] p-4">
+      <div className="flex">
+        <div className="w-1/2 flex flex-col justify-center items-center">
+          <h1 className="text-6xl font-bold mb-2 text-gray-800">
+            <span className="text-indigo-900">Wel</span>come{" "}
+            <span className="text-indigo-900">fEEsh</span>ers!
+          </h1>
+          <p className="w-2/3 text-md text-center">
+            Discover the future of aquaculture management with our Web-Based
+            Optimal Aquaculture Monitoring and Management platform, enhanced by
+            a Solar-Powered Fish Feeder.
+          </p>
+        </div>
+        <div className="flex w-1/2 justify-center">
+          <img src={logo} className="w-3/4" />
+        </div>
       </div>
-      {imageUrl ? (
-        <img src={imageUrl} alt="Firebase" className="w-60 h-60 rounded" />
-      ) : (
-        <p>Loading...</p>
-      )}
     </div>
   );
 };

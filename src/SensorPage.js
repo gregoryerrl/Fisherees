@@ -58,7 +58,7 @@ const SensorPage = () => {
               className="btn bg-gray-400 rounded p-2 text-indigo-900 text-lg hover:text-indigo-600"
               onClick={handleCaptureImage}
             >
-              Capture Image
+              Feed Fish
             </button>
             <button
               className="btn bg-gray-400 rounded p-2 text-indigo-900 text-lg hover:text-indigo-600"

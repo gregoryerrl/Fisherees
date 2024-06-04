@@ -1,4 +1,3 @@
-// src/HomePage.js
 import React, { useState, useEffect } from "react";
 import { ref as databaseRef, set, onValue } from "firebase/database";
 import { ref as storageRef, getDownloadURL } from "firebase/storage";
@@ -7,6 +6,8 @@ import { db, storage } from "./firebase/firebaseConfig";
 const SensorPage = () => {
   const [sensorData, setSensorData] = useState({});
   const [imageUrl, setImageUrl] = useState("");
+  const [captureStatus, setCaptureStatus] = useState("Idle");
+  const [isCaptureInitiated, setIsCaptureInitiated] = useState(false);
 
   const fetchImage = async () => {
     try {
@@ -21,6 +22,8 @@ const SensorPage = () => {
   const handleCaptureImage = async () => {
     try {
       await set(databaseRef(db, "AutoFeeder/captureSwitch"), 1);
+      setCaptureStatus("Processing...");
+      setIsCaptureInitiated(true);
       console.log("Capture image trigger set successfully");
     } catch (error) {
       console.error("Error setting capture image trigger:", error);
@@ -39,6 +42,17 @@ const SensorPage = () => {
     });
   }, []);
 
+  useEffect(() => {
+    const captureSwitchRef = databaseRef(db, "AutoFeeder/captureSwitch");
+    onValue(captureSwitchRef, (snapshot) => {
+      const captureSwitchValue = snapshot.val();
+      if (isCaptureInitiated && captureSwitchValue === 0) {
+        setCaptureStatus("Completed");
+        setIsCaptureInitiated(false);
+      }
+    });
+  }, [isCaptureInitiated]);
+
   return (
     <div className="w-full p-4">
       <div className="flex">
@@ -51,7 +65,7 @@ const SensorPage = () => {
             Turbidity: {sensorData.turbidity}
           </p>
           <p className="text-lg font-light p-2 w-2/3 border-black border text-red-500 bg-white">
-            Temperature: {sensorData.temperature} Celcius
+            Temperature: {sensorData.temperature} Celsius
           </p>
           <div className="mt-3 flex w-2/3 justify-between">
             <button
@@ -67,6 +81,11 @@ const SensorPage = () => {
               Refresh Image
             </button>
           </div>
+          {isCaptureInitiated && (
+            <div className="mt-3 text-lg text-white">
+              Status: {captureStatus}
+            </div>
+          )}
         </div>
         <div className="flex flex-col w-1/2 justify-center items-center">
           <h1 className="w-100 text-center text-3xl font-light text-indigo-700">

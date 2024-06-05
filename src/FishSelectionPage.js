@@ -1,7 +1,7 @@
 // src/FishSelectionPage.js
-import React, {useState} from "react";
-import {ref, set} from "firebase/database";
-import {db} from "./firebase/firebaseConfig";
+import React, { useState } from "react";
+import { ref, set } from "firebase/database";
+import { db } from "./firebase/firebaseConfig";
 
 const FishSelectionPage = () => {
   const [selectedFish, setSelectedFish] = useState("");
@@ -10,6 +10,10 @@ const FishSelectionPage = () => {
   const [numberOfFishes, setNumberOfFishes] = useState("");
   const [click, setClick] = useState("");
   const [displayFeed, setDisplayFeed] = useState(1);
+  const [batch, setBatch] = useState(1);
+
+  let BW;
+  let interval;
 
   const handleFishSelect = (event) => {
     setSelectedFish(event.target.value);
@@ -22,8 +26,6 @@ const FishSelectionPage = () => {
   };
 
   const calculateClick = async () => {
-    let BW = 0;
-    let interval = 0;
     switch (selectedAge) {
       case "Fingerling":
         BW = 0.08;
@@ -45,10 +47,11 @@ const FishSelectionPage = () => {
     const roundedClickValue = Math.ceil(rawClickValue / 25) * 25;
     const displayFeed = roundedClickValue / 25;
 
-    console.log(roundedClickValue);
+    console.log(interval);
     console.log(displayFeed);
     setClick(roundedClickValue.toString());
     setDisplayFeed(displayFeed);
+    setBatch(interval);
 
     // Set feeder steps and interval in Firebase
     await setFeeder(interval, roundedClickValue);
@@ -117,8 +120,15 @@ const FishSelectionPage = () => {
         {click && (
           <div className="mb-4">
             <p className="block mb-2">
-              Feed {displayFeed} {displayFeed > 1 ? "times" : "time"} per
+              Feeding {displayFeed * 3} grams per interval
+            </p>
+            <p className="block mb-2">
+              Feeding {displayFeed} {displayFeed > 1 ? "times" : "time"} per
               interval
+            </p>
+
+            <p className="block mb-2">
+              Feeding {batch} {batch > 1 ? "times" : "time"} per day
             </p>
           </div>
         )}
